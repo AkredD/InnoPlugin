@@ -1,0 +1,20 @@
+{
+  parserClass="com.inno.plugin.parser.InnoParser"
+
+  extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
+
+  psiClassPrefix="Inno"
+  psiImplClassSuffix="Impl"
+  psiPackage="com.inno.plugin.psi"
+  psiImplPackage="com.inno.plugin.psi.impl"
+
+  elementTypeHolderClass="com.inno.plugin.psi.SimpleTypes"
+  elementTypeClass="com.inno.plugin.psi.ElementType"
+  tokenTypeClass="com.inno.plugin.psi.TokenType"
+}
+
+simpleFile ::= item_*
+
+private item_ ::= (property|COMMENT|CRLF)
+
+property ::= (KEY? SEPARATOR VALUE?) | KEY

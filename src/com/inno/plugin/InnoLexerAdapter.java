@@ -1,4 +1,11 @@
 package com.inno.plugin;
 
-public class InnoLexerAdapter {
+import com.intellij.lexer.FlexAdapter;
+
+import java.io.Reader;
+
+public class InnoLexerAdapter extends FlexAdapter {
+    public InnoLexerAdapter() {
+        super(new SimpleLexer((Reader) null));
+    }
 }
