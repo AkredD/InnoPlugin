@@ -13,8 +13,103 @@
   tokenTypeClass="com.inno.plugin.psi.TokenType"
 }
 
-simpleFile ::= item_*
+simpleFile          ::= type EOF
 
-private item_ ::= (property|COMMENT|CRLF)
+dataName			::= (OPENBRACKET TYPENAME CLOSEBRACKET)? DATANAME
 
-property ::= (KEY? SEPARATOR VALUE?) | KEY
+varValue            ::= (NULL | dataName | BOOLEAN | NUMBER | DQ_STRING | DATE | callStatement | expression | condition)
+
+condition           ::= condition CONDITIONBOOLOPERATOR condition
+                        | boolExpression 
+                        | OPENBRACKET (condition | boolExpression) CLOSEBRACKET
+                        | CONDITIONUNARYPERATOR condition
+                        | boolExpression CONDITIONBOOLOPERATOR condition
+                        | condition CONDITIONBOOLOPERATOR boolExpression
+                        | (BOOLEAN | dataName | callStatement)
+                        
+
+boolExpression      ::=   OPENBRACKET boolExpression CLOSEBRACKET
+                        | expression CONDITIONOPERATOR expression
+                        | (DQ_STRING | NUMBER | DATE | dataName | callStatement)
+
+expression          ::= OPENBRACKET expression CLOSEBRACKET
+                        | expression OPERATOR expression
+                        | UNARYOPERATOR expression
+                        | (DQ_STRING | NUMBER | DATE | dataName | callStatement)
+
+ifStatement         ::= IF OPENBRACKET condition CLOSEBRACKET
+                        (
+                          STARTSTATEMENT ENDCOMMAND
+                            (statement)*
+                          ENDSTATEMENT ENDCOMMAND
+                        )
+                        ( ELSE
+                          STARTSTATEMENT ENDCOMMAND
+                            (statement)*
+                          ENDSTATEMENT ENDCOMMAND
+                        )?
+
+whileStatement      ::= WHILE OPENBRACKET condition CLOSEBRACKET
+                        (
+                          STARTSTATEMENT ENDCOMMAND
+                            (statement)*
+                          ENDSTATEMENT ENDCOMMAND
+                        )
+
+eqStatement         ::= DATANAME EQ varValue ENDCOMMAND
+
+plusEqStatement      ::= DATANAME PLUSEQ  varValue ENDCOMMAND
+
+minusEqStatement     ::= DATANAME MINUSEQ varValue ENDCOMMAND
+
+returnStatement     ::= RETURN varValue ENDCOMMAND
+
+continueStatement   ::= CONTINUE ENDCOMMAND
+
+breakStatement      ::= BREAK ENDCOMMAND
+
+callStatement       ::= CALL ((TYPENAME | dataName) ENDCOMMAND)? DATANAME
+                      OPENBRACKET
+                      (varValue (COMMA varValue)*)? 
+                      CLOSEBRACKET
+
+writeStatement      ::= WRITE OPENBRACKET (varValue (COMMA varValue)*)? CLOSEBRACKET ENDCOMMAND
+
+statement   ::=   (ifStatement
+                | returnStatement
+                | continueStatement
+                | breakStatement
+                | whileStatement
+                | dataDef
+                | constantDef
+                | systemDef
+                | eqStatement
+                | plusEqStatement
+                | minusEqStatement
+                | (TYPENAME)? callStatement ENDCOMMAND
+                | writeStatement)
+
+function    ::= 
+                FUNCTION TYPENAME DATANAME 
+                        OPENBRACKET 
+                        ((TYPENAME DATANAME COMMA)* TYPENAME DATANAME)?
+                        CLOSEBRACKET
+                STARTSTATEMENT ENDCOMMAND
+                    (statement)+ 
+                ENDSTATEMENT ENDCOMMAND
+
+staticBlock ::= STATIC OPENBRACKET (varDefinition)+ CLOSEBRACKET
+
+type        ::=   
+            TYPE TYPENAME (PARENT TYPENAME)? ENDCOMMAND
+                staticBlock?
+                (function)+ 
+                ENDSTATEMENT ENDCOMMAND
+
+varDefinition   ::= dataDef | constantDef | systemDef
+
+dataDef         ::= DATADEF TYPENAME DATANAME (VALUES OPENBRACKET (varValue (COMMA varValue)*)? CLOSEBRACKET)? ENDCOMMAND 
+
+constantDef     ::= CONSTANTDEF TYPENAME DATANAME VALUES OPENBRACKET (varValue (COMMA varValue)*)? CLOSEBRACKET ENDCOMMAND
+
+systemDef       ::= SYSTEMDEF TYPENAME DATANAME ENDCOMMAND
