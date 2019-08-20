@@ -17,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class InnoParserDefinition implements ParserDefinition {
     public static final TokenSet WHITE_SPACES = TokenSet.create(TokenType.WHITE_SPACE);
-    public static final TokenSet COMMENTS = TokenSet.create(SimpleTypes.COMMENT);
+    public static final TokenSet COMMENTS = TokenSet.create(SimpleTypes.COMMENTS);
 
     public static final IFileElementType FILE = new IFileElementType(InnoLanguage.INSTANCE);
 
@@ -62,5 +62,11 @@ public class InnoParserDefinition implements ParserDefinition {
 
     public SpaceRequirements spaceExistenceTypeBetweenTokens(ASTNode left, ASTNode right) {
         return SpaceRequirements.MAY;
+    }
+
+    @Override
+    @NotNull
+    public TokenSet getWhitespaceTokens() {
+        return WHITE_SPACES;
     }
 }

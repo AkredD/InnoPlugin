@@ -41,13 +41,13 @@ public class InnoSyntaxHighlighter extends SyntaxHighlighterBase {
     @NotNull
     @Override
     public TextAttributesKey[] getTokenHighlights(IElementType iElementType) {
-        if (iElementType.equals(SimpleTypes.SEPARATOR)) {
+        if (iElementType.equals(SimpleTypes.ENDCOMMAND)) {
             return SEPARATOR_KEYS;
-        } else if (iElementType.equals(SimpleTypes.KEY)) {
+        } else if (iElementType.equals(SimpleTypes.FUNCTION)) {
             return KEY_KEYS;
-        } else if (iElementType.equals(SimpleTypes.VALUE)) {
+        } else if (iElementType.equals(SimpleTypes.VAR_VALUE)) {
             return VALUE_KEYS;
-        } else if (iElementType.equals(SimpleTypes.COMMENT)) {
+        } else if (iElementType.equals(SimpleTypes.COMMENTS)) {
             return COMMENT_KEYS;
         } else if (iElementType.equals(TokenType.BAD_CHARACTER)) {
             return BAD_CHAR_KEYS;

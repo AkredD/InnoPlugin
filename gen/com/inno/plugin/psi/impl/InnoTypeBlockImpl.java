@@ -11,14 +11,14 @@ import static com.inno.plugin.psi.SimpleTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.inno.plugin.psi.*;
 
-public class InnoFunctionImpl extends ASTWrapperPsiElement implements InnoFunction {
+public class InnoTypeBlockImpl extends ASTWrapperPsiElement implements InnoTypeBlock {
 
-  public InnoFunctionImpl(@NotNull ASTNode node) {
+  public InnoTypeBlockImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull InnoVisitor visitor) {
-    visitor.visitFunction(this);
+    visitor.visitTypeBlock(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
@@ -28,8 +28,14 @@ public class InnoFunctionImpl extends ASTWrapperPsiElement implements InnoFuncti
 
   @Override
   @NotNull
-  public List<InnoStatement> getStatementList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, InnoStatement.class);
+  public List<InnoFunctionBlock> getFunctionBlockList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, InnoFunctionBlock.class);
+  }
+
+  @Override
+  @Nullable
+  public InnoStaticBlock getStaticBlock() {
+    return findChildByClass(InnoStaticBlock.class);
   }
 
 }

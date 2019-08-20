@@ -2,7 +2,6 @@ package com.inno.plugin.psi;
 
 import com.inno.plugin.InnoLanguage;
 import com.intellij.extapi.psi.PsiFileBase;
-import com.intellij.lang.Language;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.psi.FileViewProvider;
 import org.jetbrains.annotations.NotNull;

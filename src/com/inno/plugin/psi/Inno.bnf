@@ -13,20 +13,20 @@
   tokenTypeClass="com.inno.plugin.psi.TokenType"
 }
 
-simpleFile          ::= type EOF
+simpleFile          ::= typeBlock EOF
 
 dataName			::= (OPENBRACKET TYPENAME CLOSEBRACKET)? DATANAME
 
 varValue            ::= (NULL | dataName | BOOLEAN | NUMBER | DQ_STRING | DATE | callStatement | expression | condition)
 
 condition           ::= condition CONDITIONBOOLOPERATOR condition
-                        | boolExpression 
+                        | boolExpression
                         | OPENBRACKET (condition | boolExpression) CLOSEBRACKET
-                        | CONDITIONUNARYPERATOR condition
+                        | (CONDITIONUNARYPERATOR | CONDITIONBOOLOPERATOR) condition
                         | boolExpression CONDITIONBOOLOPERATOR condition
                         | condition CONDITIONBOOLOPERATOR boolExpression
                         | (BOOLEAN | dataName | callStatement)
-                        
+
 
 boolExpression      ::=   OPENBRACKET boolExpression CLOSEBRACKET
                         | expression CONDITIONOPERATOR expression
@@ -34,7 +34,7 @@ boolExpression      ::=   OPENBRACKET boolExpression CLOSEBRACKET
 
 expression          ::= OPENBRACKET expression CLOSEBRACKET
                         | expression OPERATOR expression
-                        | UNARYOPERATOR expression
+                        | (UNARYOPERATOR | OPERATOR) expression
                         | (DQ_STRING | NUMBER | DATE | dataName | callStatement)
 
 ifStatement         ::= IF OPENBRACKET condition CLOSEBRACKET
@@ -70,7 +70,7 @@ breakStatement      ::= BREAK ENDCOMMAND
 
 callStatement       ::= CALL ((TYPENAME | dataName) ENDCOMMAND)? DATANAME
                       OPENBRACKET
-                      (varValue (COMMA varValue)*)? 
+                      (varValue (COMMA varValue)*)?
                       CLOSEBRACKET
 
 writeStatement      ::= WRITE OPENBRACKET (varValue (COMMA varValue)*)? CLOSEBRACKET ENDCOMMAND
@@ -87,28 +87,30 @@ statement   ::=   (ifStatement
                 | plusEqStatement
                 | minusEqStatement
                 | (TYPENAME)? callStatement ENDCOMMAND
-                | writeStatement)
+                | writeStatement
+                | COMMENTS
+                | WS)
 
-function    ::= 
-                FUNCTION TYPENAME DATANAME 
-                        OPENBRACKET 
+functionBlock    ::=
+                FUNCTION TYPENAME DATANAME
+                        OPENBRACKET
                         ((TYPENAME DATANAME COMMA)* TYPENAME DATANAME)?
                         CLOSEBRACKET
                 STARTSTATEMENT ENDCOMMAND
-                    (statement)+ 
+                    (statement)+
                 ENDSTATEMENT ENDCOMMAND
 
 staticBlock ::= STATIC OPENBRACKET (varDefinition)+ CLOSEBRACKET
 
-type        ::=   
+typeBlock        ::=
             TYPE TYPENAME (PARENT TYPENAME)? ENDCOMMAND
                 staticBlock?
-                (function)+ 
+                (functionBlock)+
                 ENDSTATEMENT ENDCOMMAND
 
 varDefinition   ::= dataDef | constantDef | systemDef
 
-dataDef         ::= DATADEF TYPENAME DATANAME (VALUES OPENBRACKET (varValue (COMMA varValue)*)? CLOSEBRACKET)? ENDCOMMAND 
+dataDef         ::= DATADEF TYPENAME DATANAME (VALUES OPENBRACKET (varValue (COMMA varValue)*)? CLOSEBRACKET)? ENDCOMMAND
 
 constantDef     ::= CONSTANTDEF TYPENAME DATANAME VALUES OPENBRACKET (varValue (COMMA varValue)*)? CLOSEBRACKET ENDCOMMAND
 

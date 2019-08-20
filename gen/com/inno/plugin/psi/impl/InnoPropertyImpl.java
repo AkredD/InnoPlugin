@@ -18,7 +18,6 @@ public class InnoPropertyImpl extends ASTWrapperPsiElement implements InnoProper
   }
 
   public void accept(@NotNull InnoVisitor visitor) {
-    visitor.visitProperty(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
